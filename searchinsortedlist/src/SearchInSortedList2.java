@@ -1,12 +1,11 @@
 public class SearchInSortedList2 {
-
     public int search(int[] nums, int target) {
-
-        //左边最后一个不为target的下标
-        int rightIndex = bisection(nums, target);
-        //右边最后一个不为target的下标
-        int leftIndex = bisection(nums, target - 1);
-        return rightIndex - leftIndex - 1;
+        int leftIdx = bisection(nums, target, true);
+        int rightIdx = bisection(nums, target, false) - 1;
+        if (leftIdx <= rightIdx && rightIdx < nums.length && nums[leftIdx] == target && nums[rightIdx] == target) {
+            return rightIdx - leftIdx + 1;
+        }
+        return 0;
     }
 
     /**
@@ -15,18 +14,17 @@ public class SearchInSortedList2 {
      * @param target
      * @return
      */
-    public int bisection(int[] nums, int target) {
-        int left = 0;
-        int right = nums.length - 1;
-
-        while (left <= right) {
-            int mid = (right + left) >> 1;
-            if (nums[mid] <= target) {
-                left = mid + 1;
-            } else  {
-                right = mid - 1;
+    public int bisection(int[] nums, int target, boolean lower) {
+        int ans = nums.length, left = 0, right = nums.length - 1;
+        while (right >= left) {
+            int middle = (left + right) / 2;
+            if (nums[middle] > target || (lower && nums[middle] >= target)) {
+                right = middle - 1;
+                ans = middle;
+            } else {
+                left = middle + 1;
             }
         }
-        return left;
+        return ans;
     }
 }
